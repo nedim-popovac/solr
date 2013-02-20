@@ -1,0 +1,16 @@
+<dataConfig>
+  <dataSource type="JdbcDataSource"
+        driver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        url="jdbc:sqlserver://mobile-pc\sqlexpress;databaseName=KMDatabaseMain"
+        user="sa"
+        password="as"/>
+  
+
+  <document name="articleviews">
+    <entity name="review" query="SELECT Id, Naslov, Sadrzaj FROM Clanci">
+      <field column="Id" name="articleid"/>   
+      <field column="Naslov" name="articletitle"/>
+      <field column="Sadrzaj" name="articletext"/>
+    </entity>
+  </document>
+</dataConfig>
