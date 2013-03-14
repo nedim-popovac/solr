@@ -7,10 +7,43 @@
   
 
   <document name="articleviews">
-    <entity name="review" query="SELECT Id, Naslov, Sadrzaj FROM Clanci">
-      <field column="Id" name="articleid"/>   
+    <!--<entity name="review" query="SELECT Id, Naslov, Sadrzaj FROM Clanci">-->
+    <entity name="review" transformer="TemplateTransformer" pk="ClanciId" query="
+      SELECT dbo.Clanci.Naslov AS Naslov, dbo.Clanci.Sadrzaj AS Sadrzaj, dbo.Clanci.DatumKreiranja AS DatumKreiranja, dbo.KategorijeClanaka.NazivKategorije AS NazivKategorije, dbo.Pitanja.Pitanje AS Pitanje, dbo.Odgovori.Odgovor AS Odgovor, dbo.Clanci.Id AS ClanciId
+      FROM dbo.Clanci left JOIN
+      dbo.Pitanja ON dbo.Clanci.Id = dbo.Pitanja.IdClanak left JOIN
+      dbo.Odgovori ON dbo.Pitanja.Id = dbo.Odgovori.IdPitanje left join
+      dbo.KategorijeClanaka ON dbo.Clanci.IdKategorija = dbo.KategorijeClanaka.Id">
+      
+      <field column="ClanciId" name="articleid"/>
       <field column="Naslov" name="articletitle"/>
-      <field column="Sadrzaj" name="articletext"/>
+      <field column="Sadrzaj" name="articletext"/>    
+      <field column="Pitanje" name="question"/>
+      <field column="Odgovor" name="answer"/>
+      <field column="NazivKategorije" name="category"/>
+      <field column="DatumKreiranja" name="date"/>
+      <field  column="doc_id" template="CLANAK_${review.ClanciId}" />
+      <field  column="doc_type" template="CLANAK" />
     </entity>
+    
+    <entity name="pitanje" transformer="TemplateTransformer" query="
+      SELECT Id AS QAId, NaslovPitanja, Pitanje FROM QAPitanja">
+      <field column="QAId" name="QAid"/>
+      <field column="Pitanje" name="QAquestion"/>
+      <field column="NaslovPitanja" name="QAquestiontitle"/>
+      <field  column="doc_id" template="PITANJA_${pitanje.QAId}" />
+      <field  column="doc_type" template="PITANJA" />
+    </entity>
+    
+    <entity name="odgovor" transformer="TemplateTransformer" query="
+      SELECT QAO.Id AS QAIdanswer, Odgovor, IdPitanje AS QAAnswerIdPitanje, QAP.NaslovPitanja AS QANaslovPitanja FROM QAOdgovori AS QAO JOIN QAPitanja AS QAP ON QAO.IdPitanje=QAP.Id">
+      <field column="QAIdanswer" name="QAidanswer"/>
+      <field column="Odgovor" name="QAanswer"/>
+      <field column="QAAnswerIdPitanje" name="QAAnswerIdPitanje"/>
+      <field column="QANaslovPitanja" name="QANaslovPitanja"/>
+      <field  column="doc_id" template="ODGOVORI_${odgovor.QAIdanswer}" />
+      <field  column="doc_type" template="ODGOVORI" />
+    </entity>
+
   </document>
 </dataConfig>

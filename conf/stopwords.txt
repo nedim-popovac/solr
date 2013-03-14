@@ -17,3 +17,5 @@ je
 kako
 gdje
 iz
+na
+u
